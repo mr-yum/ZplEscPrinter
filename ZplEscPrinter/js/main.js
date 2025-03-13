@@ -260,8 +260,8 @@ function startTcpServer() {
                 const response = JSON.stringify({success: true});
                 sock.write('HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: ' + Buffer.byteLength(response) + '\r\n\r\n' + response);
                 data = data.replace(regex,'');
+                sock.end();
             }
-            sock.end();
 
             const code = data + '';
             if (code.includes('Host:') && code.includes('Connection: keep-alive') && code.includes('HTTP')) {
@@ -283,6 +283,8 @@ function startTcpServer() {
                 console.error(err);
                 notify('ERROR: {0}'.format(err.message), 'print', 'danger', 0)
             }
+            sock.write(Buffer.from("0x0"));
+            sock.end();
         });
 
     });
